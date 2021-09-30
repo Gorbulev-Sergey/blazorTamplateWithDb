@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using blazorProject5.Models; 
+@inject SignInManager<user> SignInManager
+@inject UserManager<user> UserManager
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<ul class="navbar-nav d-lg-inline-block float-right">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item text-right">
+            <a class="nav-link" data-toggle="dropdown"><span class="fas fa-user-circle" style="font-size:1.4em; cursor:pointer"></span></a>
+            <div class="dropdown-menu dropdown-menu-right mt-sm-n2 mr-lg-2" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="Identity/Account/Manage">Профиль</a>
+                <a class="dropdown-item" href="Identity/Account/LogOut">Выход</a>
+            </div>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item text-right">
+            <a class="nav-link" data-toggle="dropdown"><span class="fas fa-user-circle" style="font-size:1.4em; cursor:pointer"></span></a>
+            <div class="dropdown-menu dropdown-menu-right mt-sm-n2 mr-lg-2" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="Identity/Account/Register">Регистрация</a>
+                <a class="dropdown-item" href="Identity/Account/Login">Вход</a>
+            </div>
+        </li>
+    }
+</ul>
+
+

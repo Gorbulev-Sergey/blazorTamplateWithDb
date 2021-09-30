@@ -1,0 +1,66 @@
+﻿@using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Mvc.ViewEngines
+@inject IWebHostEnvironment Environment
+@inject ICompositeViewEngine Engine
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - blazorProject5</title>
+    <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/font-awesome/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <a class="nav-item ml-sm-1 mr-2 font-weight-bold text-decoration-none text-uppercase" style="color: rgb(233 236 239)" href="/">Панель навигации</a>
+        <button class="navbar-toggler btn btn-dark mr-sm-1" data-toggle="collapse" data-target="#navbarMain">
+            <span class="fas fa-bars"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-lg-between ml-sm-1 mr-sm-1" id="navbarMain">
+            <ul class="navbar-nav float-left">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="contacts">Контакты</a>
+                </li>
+            </ul>
+
+            <div class="float-right">
+                <ul class="navbar-nav d-lg-inline-block">
+                    <li class="nav-item" hidden>
+                        <a class="nav-link" href="#">Панель администратора</a>
+                    </li>
+                </ul>
+                @{
+                    var result = Engine.FindView(ViewContext, "_LoginPartial", isMainPage: false);
+                }
+                @if (result.Success)
+                {
+                    await Html.RenderPartialAsync("_LoginPartial");
+                }
+                else
+                {
+                    throw new InvalidOperationException("The default Identity UI layout requires a partial view '_LoginPartial' " +
+                        "usually located at '/Pages/_LoginPartial' or at '/Views/Shared/_LoginPartial' to work. Based on your configuration " +
+                        $"we have looked at it in the following locations: {System.Environment.NewLine}{string.Join(System.Environment.NewLine, result.SearchedLocations)}.");
+                }
+            </div>
+        </div>
+    </nav>    
+
+    <div class="container mb-5" style="margin-top:5em">
+            @RenderBody()
+    </div>
+
+    <footer class="footer bg-dark text-muted p-3 position-fixed" style="bottom:0; right:0; width:100%">        
+            &copy; 2021 - blazorProject5 - <a asp-area="" asp-page="Privacy">Privacy</a>        
+    </footer>
+
+    <script src="~/jquery/jquery.slim.min.js"></script>
+    <script src="~/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/font-awesome/js/all.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

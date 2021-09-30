@@ -1,0 +1,77 @@
+﻿@page "/tags"
+@inject blazorProject5.Services.TagsService TagsService
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h1>Теги</h1>
+    <button class="btn btn-light" data-toggle="collapse" data-target="#add"><span class="fas fa-plus mr-2"></span>Добавить тег</button>
+</div>
+<div id="add" class="row mb-4 collapse">
+    <div class="col">
+        <div class="card bg-light border-0">
+            <div class="card-body">
+                <h5 class="mb-3">Добавить тег</h5>
+                <div class="row">
+                    <div class="col d-flex flex-column justify-content-between align-items-start">
+                        <div class="w-100">
+                            <input class="form-control border-0 mb-1" @bind="tag.name" placeholder="Название" />
+                            <input class="form-control border-0 mb-1" @bind="tag.description" placeholder="Описание" />
+                        </div>
+                        <div class="d-flex">
+                            <button class="btn btn-light mt-1" @onclick="()=> { TagsService.add(tag); tags.Add(tag); tag = new tag(); }">Добавить</button>
+                            <button class="btn btn-light mt-1" data-toggle="collapse" data-target="#add">Отмена</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="edit" class="row mb-4 @collapse_for_edit">
+    <div class="col">
+        <div class="card bg-light border-0">            
+            <div class="card-body">
+                <h5 class="mb-3">Реактировать тег</h5>
+                <div class="row">                    
+                    <div class="col d-flex flex-column justify-content-between align-items-start">
+                        <div class="w-100">
+                            <input class="form-control border-0 mb-1" @bind="editing_tag.name" placeholder="Название" />
+                            <input class="form-control border-0 mb-1" @bind="editing_tag.description" placeholder="Описание" />
+                            <input class="form-control border-0 mb-1" @bind="editing_tag.position" placeholder="Позиция" />
+                        </div>
+                        <div class="d-flex">
+                            <button class="btn btn-light mt-1" @onclick='()=> { TagsService.edit(editing_tag); var old_tag = tags.FirstOrDefault(t => t.id == editing_tag.id); old_tag=editing_tag; editing_tag = new tag(); collapse_for_edit="collapse"; }'>Сохранить</button>
+                            <button class="btn btn-light mt-1" @onclick='()=> { editing_tag = new tag(); collapse_for_edit = "collapse"; }'>Отмена</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    @foreach (var tag in tags.OrderBy(t=>t.position))
+    {
+    <div class="btn-group btn-group-sm mr-2">
+        <div class="btn btn-dark">@tag.position</div>
+        <div class="btn btn-light">
+            @tag.name
+        </div>
+        <button class="btn btn-danger" @onclick='()=> { TagsService.delete(tag); tags.Remove(tag); }'><span class="fas fa-trash"></span></button>
+        <button class="btn btn-dark" @onclick='()=> { editing_tag = tag; if (!string.IsNullOrEmpty(collapse_for_edit)) collapse_for_edit = ""; }'><span class="fas fa-pen"></span></button>
+    </div>        
+    }
+</div>
+
+@code {
+    List<tag> tags = new List<tag>();
+    tag tag = new tag();
+    tag editing_tag = new tag(); 
+    string collapse_for_edit = "collapse";
+    protected override void OnInitialized()
+    {
+        tags = TagsService.get();
+    }
+
+
+}

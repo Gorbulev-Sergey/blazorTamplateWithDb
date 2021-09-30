@@ -1,0 +1,30 @@
+﻿<AuthorizeView>
+    <Authorized>
+        @*<a href="Identity/Account/Manage">Hello, @context.User.Identity.Name!</a>
+        <form method="post" action="Identity/Account/LogOut">
+            <button type="submit" class="nav-link btn btn-link">Log out</button>
+        </form>*@
+        <ul class="navbar-nav d-lg-inline-block float-right">
+            <li class="nav-item text-right">
+                <a class="nav-link mr-md-2" data-toggle="dropdown"><span class="fas fa-user-circle" style="font-size:1.4em; cursor:pointer"></span></a>
+                <div class="dropdown-menu dropdown-menu-right mt-sm-n2 mr-lg-2" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="Identity/Account/Manage">Профиль</a>
+                    <a class="dropdown-item" href="Identity/Account/LogOut">Выход</a>
+                </div>
+            </li>
+        </ul>        
+    </Authorized>
+    <NotAuthorized>
+        @*<a href="Identity/Account/Register">Register</a>
+        <a href="Identity/Account/Login">Log in</a>*@
+        <ul class="navbar-nav d-lg-inline-block float-right">
+            <li class="nav-item text-right mr-md-2">
+                <a class="nav-link" data-toggle="dropdown"><span class="fas fa-user-circle" style="font-size:1.4em; cursor:pointer"></span></a>
+                <div class="dropdown-menu dropdown-menu-right mt-sm-n2 mr-lg-2" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="Identity/Account/Register">Регистрация</a>
+                    <a class="dropdown-item" href="Identity/Account/Login">Вход</a>
+                </div>
+            </li>
+        </ul>        
+    </NotAuthorized>
+</AuthorizeView>

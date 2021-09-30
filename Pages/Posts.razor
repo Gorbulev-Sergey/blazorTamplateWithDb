@@ -1,0 +1,116 @@
+﻿@page "/posts"
+@inject blazorProject5.Services.PostsService PostsService
+
+
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h1>Публикации</h1>
+    <button class="btn btn-light" data-toggle="collapse" data-target="#add"><span class="fas fa-plus mr-2"></span>Добавить публикацию</button>
+</div>
+
+<div id="add" class="row mb-4 collapse">
+    <div class="col">
+        <div class="card bg-light border-0">
+            <div class="card-body">
+                <h5 class="mb-3">Добавить публикацию</h5>
+                <div class="row">
+                    <div class="col d-flex flex-column justify-content-between align-items-start">
+                        <div class="w-100">
+                            <input class="form-control border-0 mb-1" @bind="post.title" placeholder="Заголовок" />
+                            <input class="form-control border-0 mb-1" @bind="post.description" placeholder="Описание" />
+                            <input class="form-control border-0 mb-1" @bind="post.content" placeholder="Содержимое" />
+                            <input class="form-control border-0 mb-1" @bind-value="post.cover_image" @bind-value:event="oninput" placeholder="Url фотографии" />
+                        </div>
+                        <div class="d-flex">
+                            <button class="btn btn-light mt-1" @onclick='()=> {PostsService.add(post); posts.Insert(0,post); post = new post(); }'>Добавить</button>
+                            <button class="btn btn-light mt-1" data-toggle="collapse" data-target="#add">Отмена</button>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(post.cover_image))
+                    {
+                        <div class="col">
+                            <img class="w-100" src="@post.cover_image" />
+                        </div>
+                    }
+                </div>
+            </div>            
+        </div>
+    </div>  
+</div>
+<div id="edit" class="row mb-4 @collapse_for_edit">
+    <div class="col">
+        <div class="card bg-light border-0">
+            <div class="card-body">
+                <h5 class="mb-3">Редактировать публикацию</h5>
+                <div class="row">
+                    <div class="col d-flex flex-column justify-content-between align-items-start">
+                        <div class="w-100">
+                            <input class="form-control border-0 mb-1" @bind="editing_post.title" placeholder="Заголовок" />
+                            <input class="form-control border-0 mb-1" @bind="editing_post.description" placeholder="Описание" />
+                            <input class="form-control border-0 mb-1" @bind="editing_post.content" placeholder="Содержимое" />
+                            <input class="form-control border-0 mb-1" @bind-value="editing_post.cover_image" @bind-value:event="oninput" placeholder="Url фотографии" />
+                        </div>
+                        <div class="d-flex">
+                            <button class="btn btn-light mt-1" @onclick='()=> {PostsService.edit(editing_post); var ol_post = posts.FirstOrDefault(p => p.id == editing_post.id);ol_post = editing_post; editing_post = new post(); collapse_for_edit="collapse"; }'>Сохранить</button>
+                            <button class="btn btn-light mt-1" @onclick='()=> { editing_post = new post(); collapse_for_edit = "collapse"; }'>Отмена</button>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(editing_post.cover_image))
+                    {
+                        <div class="col">
+                            <img class="w-100" src="@editing_post.cover_image" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+    @foreach (var item in posts)
+    {
+        <div class="col mb-4">
+            <div class="card h-100 bg-light border-0">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="card-title">@item.title</h5>
+                            <div class="card-text text-muted mt-n2 mb-2" style="font-size:.8em">@((MarkupString)item.description)</div>
+                        </div>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-danger" @onclick='()=> { PostsService.delete(item); posts.Remove(item); }'><span class="fas fa-trash"></span></button>
+                            <button class="btn btn-dark" @onclick='()=> {collapse_for_edit=""; editing_post = item; }'><span class="fas fa-pen"></span></button>
+                        </div>
+                    </div>                    
+                    <div class="card-text">@((MarkupString)item.content)</div>
+                </div>
+                <div style="background:url(@item.cover_image) center; background-size:cover; min-height:200px;width:100%"></div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-secondary small ">@item.date.ToShortDateString()</span>
+                    </div>
+                    <div>
+                        @foreach (var tag in item.tags)
+                        {
+                            <span class="badge badge-dark badge-pill mr-2">@tag.name</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+</div>
+
+
+@code {
+    List<post> posts = new List<post>();
+    post post = new post();
+    post editing_post  = new post();
+    string collapse_for_edit = "collapse";
+    protected override void OnInitialized()
+    {
+        posts = PostsService.get();
+    }
+}
